@@ -28,7 +28,7 @@ public class CreateVehicleTypes {
         VehiclesFactory fac = VehicleUtils.getFactory();
 
         // pce = 0.125 => 8 people in a 7.5 x 3.5 rectangular
-        veh.addVehicleType(createVehicleType(TransportMode.car, 1.875, 1.6, 0.125, fac));
+        veh.addVehicleType(createVehicleType(TransportMode.car, 1.875, 1.3, 1./14., fac));
         return veh;
     }
 

@@ -16,7 +16,7 @@ import java.util.Set;
 public class CreateNetwork {
     private static final Logger log = Logger.getLogger(CreateNetwork.class);
 
-    private static final double WALK_SPEED = 1.5; // walk speed in m/s
+    private static final double WALK_SPEED = 1.3; // walk speed in m/s
     private static final Set<String> ALLOWED_MODES = Set.of(TransportMode.car);
     private static final String NETWORK_FILE_NAME = "network.xml";
 
@@ -63,21 +63,26 @@ public class CreateNetwork {
         net.addNode(nd);
     }
 
-    private static void createLink(Network net, NetworkFactory fac, String linkId, String n1, String n2, double length, double cap) {
+    private static void createLink(Network net, NetworkFactory fac, String linkId, String n1, String n2, double length, double cap, double maxSpeed) {
         Node node1 = net.getNodes().get(Id.createNodeId(n1));
         Node node2 = net.getNodes().get(Id.createNodeId(n2));
 
         Link lnk = fac.createLink(Id.createLinkId(linkId), node1, node2);
         lnk.setLength(length); // length in m
         lnk.setCapacity(cap); // capacity in veh/h
-        lnk.setFreespeed(WALK_SPEED);
+        lnk.setFreespeed(maxSpeed);
         lnk.setAllowedModes(ALLOWED_MODES);
         net.addLink(lnk);
     }
 
     private static void createLink(Network net, NetworkFactory fac, String n1, String n2, double length, double cap) {
         String linkId = "l_" + n1 + "_" + n2;
-        createLink(net, fac, linkId, n1, n2, length, cap);
+        createLink(net, fac, linkId, n1, n2, length, cap, WALK_SPEED);
+    }
+
+    private static void createLink(Network net, NetworkFactory fac, String n1, String n2, double length, double cap, double maxSpeed) {
+        String linkId = "l_" + n1 + "_" + n2;
+        createLink(net, fac, linkId, n1, n2, length, cap, maxSpeed);
     }
 
     public static void createNodes(Network net, NetworkFactory fac) {
@@ -119,60 +124,62 @@ public class CreateNetwork {
 
     private static void createLinks(Network net, NetworkFactory fac) {
         // platform links
-        createLink(net, fac, "pf_1", "pf_2", 50., 100.);
-        createLink(net, fac, "pf_2", "pf_1", 50., 100.);
-        createLink(net, fac, "pf_2", "pf_3", 20., 100.);
-        createLink(net, fac, "pf_3", "pf_2", 20., 100.);
-        createLink(net, fac, "pf_3", "pf_4", 20., 100.);
-        createLink(net, fac, "pf_4", "pf_3", 20., 100.);
-        createLink(net, fac, "pf_4", "pf_5", 20., 100.);
-        createLink(net, fac, "pf_5", "pf_4", 20., 100.);
-        createLink(net, fac, "pf_5", "pf_6", 50., 100.);
-        createLink(net, fac, "pf_6", "pf_5", 50., 100.);
+        double cap = 10000./14.;
 
-        createLink(net, fac, "pf_2", "tr_1_1", 50., 100.);
-        createLink(net, fac, "pf_2", "tr_2_4", 50., 100.);
-        createLink(net, fac, "tr_1_1", "pf_2", 50., 100.);
-        createLink(net, fac, "tr_2_4", "pf_2", 50., 100.);
+        createLink(net, fac, "pf_1", "pf_2", 50., cap);
+        createLink(net, fac, "pf_2", "pf_1", 50., cap);
+        createLink(net, fac, "pf_2", "pf_3", 20., cap);
+        createLink(net, fac, "pf_3", "pf_2", 20., cap);
+        createLink(net, fac, "pf_3", "pf_4", 20., cap);
+        createLink(net, fac, "pf_4", "pf_3", 20., cap);
+        createLink(net, fac, "pf_4", "pf_5", 20., cap);
+        createLink(net, fac, "pf_5", "pf_4", 20., cap);
+        createLink(net, fac, "pf_5", "pf_6", 50., cap);
+        createLink(net, fac, "pf_6", "pf_5", 50., cap);
 
-        createLink(net, fac, "pf_3", "tr_1_2", 50., 100.);
-        createLink(net, fac, "pf_3", "tr_2_3", 50., 100.);
-        createLink(net, fac, "tr_1_2", "pf_3", 50., 100.);
-        createLink(net, fac, "tr_2_3", "pf_3", 50., 100.);
+        createLink(net, fac, "pf_2", "tr_1_1", 10., 999999.);
+        createLink(net, fac, "pf_2", "tr_2_4", 10., 999999.);
+        createLink(net, fac, "tr_1_1", "pf_2", 10., 999999.);
+        createLink(net, fac, "tr_2_4", "pf_2", 10., 999999.);
 
-        createLink(net, fac, "pf_4", "tr_1_3", 50., 100.);
-        createLink(net, fac, "pf_4", "tr_2_2", 50., 100.);
-        createLink(net, fac, "tr_1_3", "pf_4", 50., 100.);
-        createLink(net, fac, "tr_2_2", "pf_4", 50., 100.);
+        createLink(net, fac, "pf_3", "tr_1_2", 10., 999999.);
+        createLink(net, fac, "pf_3", "tr_2_3", 10., 999999.);
+        createLink(net, fac, "tr_1_2", "pf_3", 10., 999999.);
+        createLink(net, fac, "tr_2_3", "pf_3", 10., 999999.);
 
-        createLink(net, fac, "pf_5", "tr_1_4", 50., 100.);
-        createLink(net, fac, "pf_5", "tr_2_1", 50., 100.);
-        createLink(net, fac, "tr_1_4", "pf_5", 50., 100.);
-        createLink(net, fac, "tr_2_1", "pf_5", 50., 100.);
+        createLink(net, fac, "pf_4", "tr_1_3", 10., 999999.);
+        createLink(net, fac, "pf_4", "tr_2_2", 10., 999999.);
+        createLink(net, fac, "tr_1_3", "pf_4", 10., 999999.);
+        createLink(net, fac, "tr_2_2", "pf_4", 10., 999999.);
+
+        createLink(net, fac, "pf_5", "tr_1_4", 10., 999999.);
+        createLink(net, fac, "pf_5", "tr_2_1", 10., 999999.);
+        createLink(net, fac, "tr_1_4", "pf_5", 10., 999999.);
+        createLink(net, fac, "tr_2_1", "pf_5", 10., 999999.);
 
         // exit 1 links
-        createLink(net, fac, "pf_1", "ex_1_1", 50., 100.);
-        createLink(net, fac, "ex_1_1", "pf_1", 50., 100.);
-        createLink(net, fac, "ex_1_1", "ex_1_2", 50., 100.);
-        createLink(net, fac, "ex_1_2", "ex_1_1", 50., 100.);
-        createLink(net, fac, "ex_1_2", "ex_1_3", 50., 100.);
-        createLink(net, fac, "ex_1_3", "ex_1_2", 50., 100.);
-        createLink(net, fac, "ex_1_1", "ex_1_4", 50., 100.);
-        createLink(net, fac, "ex_1_4", "ex_1_1", 50., 100.);
-        createLink(net, fac, "ex_1_4", "ex_1_5", 50., 100.);
-        createLink(net, fac, "ex_1_5", "ex_1_4", 50., 100.);
+        createLink(net, fac, "pf_1", "ex_1_1", 50., cap, 0.5);
+        createLink(net, fac, "ex_1_1", "pf_1", 50., cap, 0.5);
+        createLink(net, fac, "ex_1_1", "ex_1_2", 50., cap);
+        createLink(net, fac, "ex_1_2", "ex_1_1", 50., cap);
+        createLink(net, fac, "ex_1_2", "ex_1_3", 50., cap);
+        createLink(net, fac, "ex_1_3", "ex_1_2", 50., cap);
+        createLink(net, fac, "ex_1_1", "ex_1_4", 50., cap);
+        createLink(net, fac, "ex_1_4", "ex_1_1", 50., cap);
+        createLink(net, fac, "ex_1_4", "ex_1_5", 50., cap);
+        createLink(net, fac, "ex_1_5", "ex_1_4", 50., cap);
 
         // exit 2 links
-        createLink(net, fac, "pf_6", "ex_2_1", 50., 100.);
-        createLink(net, fac, "ex_2_1", "pf_6", 50., 100.);
-        createLink(net, fac, "ex_2_1", "ex_2_2", 50., 100.);
-        createLink(net, fac, "ex_2_2", "ex_2_1", 50., 100.);
-        createLink(net, fac, "ex_2_2", "ex_2_3", 50., 100.);
-        createLink(net, fac, "ex_2_3", "ex_2_2", 50., 100.);
-        createLink(net, fac, "ex_2_1", "ex_2_4", 50., 100.);
-        createLink(net, fac, "ex_2_4", "ex_2_1", 50., 100.);
-        createLink(net, fac, "ex_2_4", "ex_2_5", 50., 100.);
-        createLink(net, fac, "ex_2_5", "ex_2_4", 50., 100.);
+        createLink(net, fac, "pf_6", "ex_2_1", 50., cap, 0.5);
+        createLink(net, fac, "ex_2_1", "pf_6", 50., cap, 0.5);
+        createLink(net, fac, "ex_2_1", "ex_2_2", 50., cap);
+        createLink(net, fac, "ex_2_2", "ex_2_1", 50., cap);
+        createLink(net, fac, "ex_2_2", "ex_2_3", 50., cap);
+        createLink(net, fac, "ex_2_3", "ex_2_2", 50., cap);
+        createLink(net, fac, "ex_2_1", "ex_2_4", 50., cap);
+        createLink(net, fac, "ex_2_4", "ex_2_1", 50., cap);
+        createLink(net, fac, "ex_2_4", "ex_2_5", 50., cap);
+        createLink(net, fac, "ex_2_5", "ex_2_4", 50., cap);
     }
 
     private static class Input {
