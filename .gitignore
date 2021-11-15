@@ -19,4 +19,7 @@ hs_err_pid*
 
 /.idea/
 *.iml
-*.xml
+scenarios/simpleWalkScenario/input/vehicles.xml
+scenarios/simpleWalkScenario/input/plans.xml
+scenarios/simpleWalkScenario/input/network.xml
+scenarios/simpleWalkScenario/config.xml
