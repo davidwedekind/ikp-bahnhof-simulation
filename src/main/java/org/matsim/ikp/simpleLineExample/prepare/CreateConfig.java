@@ -1,4 +1,4 @@
-package org.matsim.simpleLineExample.prepare;
+package org.matsim.ikp.simpleLineExample.prepare;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
